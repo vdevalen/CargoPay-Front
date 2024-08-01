@@ -45,17 +45,16 @@ const Dashboard = () => {
     }
   };
 
-  // Procesar un pago en una tarjeta existente
   const handleProcessPayment = async () => {
     try {
-      const result = await processPayment(existingCardNumber, paymentAmount, token);
+      const result = await processPayment(existingCardNumber, parseFloat(paymentAmount), token); // Asegúrate de que el monto es un número
       setSearchResult(`Pago procesado. Nuevo saldo: ${result.balance}`);
     } catch (error) {
       console.error('Error al procesar el pago:', error);
       setSearchResult('Error al procesar el pago.');
     }
   };
-
+  
   return (
     <div>
       <nav>
@@ -63,7 +62,6 @@ const Dashboard = () => {
         <span className="nav-item" onClick={logout}>Cerrar Sesión</span>
       </nav>
       <div className="container">
-        {/* Área de Gestión de Tarjetas */}
         <div className="card-management">
           <h2>Gestión de Tarjetas</h2>
           <input
@@ -82,7 +80,6 @@ const Dashboard = () => {
           <p>{message}</p>
         </div>
 
-        {/* Área de Consulta de Tarjetas */}
         <div className="card-search">
           <h2>Consulta de Tarjetas</h2>
           <input

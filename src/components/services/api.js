@@ -67,13 +67,14 @@ export const getCardBalance = async (cardNumber, token) => {
 };
 
 export const processPayment = async (cardId, amount, token) => {
+  console.log('Amount to be sent:', amount); 
   const response = await fetch(`${baseUrl}/Payment/${cardId}/pay`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ amount }),
+    body: JSON.stringify({ amount: parseFloat(amount) }),
   });
 
   if (!response.ok) {
@@ -82,3 +83,5 @@ export const processPayment = async (cardId, amount, token) => {
 
   return await response.json();
 };
+
+
