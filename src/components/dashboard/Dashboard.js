@@ -5,16 +5,17 @@ import { createCard, getCardDetails, getCardBalance, processPayment } from '../s
 
 const Dashboard = () => {
   const { token, logout } = useContext(AuthContext);
-  const [newCardNumber, setNewCardNumber] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
   const [initialBalance, setInitialBalance] = useState('');
   const [existingCardNumber, setExistingCardNumber] = useState('');
+  const [paymentAmount, setPaymentAmount] = useState('');
   const [message, setMessage] = useState('');
   const [searchResult, setSearchResult] = useState(null);
 
   // Crear tarjeta nueva
   const handleCreateCard = async () => {
     try {
-      const newCard = await createCard(newCardNumber, initialBalance, token);
+      const newCard = await createCard(cardNumber, initialBalance, token);
       setMessage(`Tarjeta creada: ${newCard.cardNumber} con saldo ${newCard.balance}`);
     } catch (error) {
       console.error('Error al crear la tarjeta:', error);
@@ -47,7 +48,7 @@ const Dashboard = () => {
   // Procesar un pago en una tarjeta existente
   const handleProcessPayment = async () => {
     try {
-      const result = await processPayment(existingCardNumber, 50, token);
+      const result = await processPayment(existingCardNumber, paymentAmount, token);
       setSearchResult(`Pago procesado. Nuevo saldo: ${result.balance}`);
     } catch (error) {
       console.error('Error al procesar el pago:', error);
@@ -62,13 +63,14 @@ const Dashboard = () => {
         <span className="nav-item" onClick={logout}>Cerrar Sesión</span>
       </nav>
       <div className="container">
+        {/* Área de Gestión de Tarjetas */}
         <div className="card-management">
           <h2>Gestión de Tarjetas</h2>
           <input
             type="text"
             placeholder="Número de Tarjeta"
-            value={newCardNumber}
-            onChange={(e) => setNewCardNumber(e.target.value)}
+            value={cardNumber}
+            onChange={(e) => setCardNumber(e.target.value)}
           />
           <input
             type="text"
@@ -80,6 +82,7 @@ const Dashboard = () => {
           <p>{message}</p>
         </div>
 
+        {/* Área de Consulta de Tarjetas */}
         <div className="card-search">
           <h2>Consulta de Tarjetas</h2>
           <input
@@ -90,6 +93,12 @@ const Dashboard = () => {
           />
           <button onClick={handleGetCardDetails}>Obtener Detalles de la Tarjeta</button>
           <button onClick={handleGetCardBalance}>Obtener Saldo de la Tarjeta</button>
+          <input
+            type="text"
+            placeholder="Monto del Pago"
+            value={paymentAmount}
+            onChange={(e) => setPaymentAmount(e.target.value)}
+          />
           <button onClick={handleProcessPayment}>Procesar Pago</button>
           <p>{searchResult}</p>
         </div>
