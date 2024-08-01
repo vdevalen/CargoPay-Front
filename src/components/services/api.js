@@ -29,7 +29,7 @@ export const createCard = async (cardNumber, initialBalance, token) => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to create card: ' + response.statusText);
+    throw new Error(`Failed to create card: ${response.statusText}`);
   }
 
   return await response.json();
@@ -44,7 +44,7 @@ export const getCardDetails = async (cardNumber, token) => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch card details: ' + response.statusText);
+    throw new Error(`Failed to fetch card details: ${response.statusText}`);
   }
 
   return await response.json();
@@ -59,7 +59,7 @@ export const getCardBalance = async (cardNumber, token) => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to fetch card balance: ' + response.statusText);
+    throw new Error(`Failed to fetch card balance: ${response.statusText}`);
   }
 
   const data = await response.json();
@@ -77,7 +77,7 @@ export const processPayment = async (cardId, amount, token) => {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to process payment: ' + response.statusText);
+    throw new Error(`Failed to process payment: ${response.statusText}`);
   }
 
   return await response.json();

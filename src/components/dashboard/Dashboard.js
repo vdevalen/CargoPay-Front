@@ -5,54 +5,97 @@ import { createCard, getCardDetails, getCardBalance, processPayment } from '../s
 
 const Dashboard = () => {
   const { token, logout } = useContext(AuthContext);
+  const [newCardNumber, setNewCardNumber] = useState('');
+  const [initialBalance, setInitialBalance] = useState('');
+  const [existingCardNumber, setExistingCardNumber] = useState('');
   const [message, setMessage] = useState('');
+  const [searchResult, setSearchResult] = useState(null);
 
+  // Crear tarjeta nueva
   const handleCreateCard = async () => {
     try {
-      const newCard = await createCard('123456789012345', 100, token);
-      setMessage(`Card created: ${newCard.cardNumber} with balance ${newCard.balance}`);
+      const newCard = await createCard(newCardNumber, initialBalance, token);
+      setMessage(`Tarjeta creada: ${newCard.cardNumber} con saldo ${newCard.balance}`);
     } catch (error) {
-      setMessage('Error creating card');
+      console.error('Error al crear la tarjeta:', error);
+      setMessage('Error al crear la tarjeta. Verifique los datos.');
     }
   };
 
+  // Obtener detalles de una tarjeta existente
   const handleGetCardDetails = async () => {
     try {
-      const cardDetails = await getCardDetails('123456789012345', token);
-      setMessage(`Card: ${cardDetails.cardNumber}, Balance: ${cardDetails.balance}`);
+      const cardDetails = await getCardDetails(existingCardNumber, token);
+      setSearchResult(`Tarjeta: ${cardDetails.cardNumber}, Saldo: ${cardDetails.balance}`);
     } catch (error) {
-      setMessage('Error fetching card details');
+      console.error('Error al obtener los detalles de la tarjeta:', error);
+      setSearchResult('Tarjeta no encontrada.');
     }
   };
 
+  // Obtener saldo de una tarjeta existente
   const handleGetCardBalance = async () => {
     try {
-      const balance = await getCardBalance('123456789012345', token);
-      setMessage(`Balance: ${balance}`);
+      const balance = await getCardBalance(existingCardNumber, token);
+      setSearchResult(`Saldo: ${balance}`);
     } catch (error) {
-      setMessage('Error fetching card balance');
+      console.error('Error al obtener el saldo de la tarjeta:', error);
+      setSearchResult('Error al obtener el saldo de la tarjeta.');
     }
   };
 
+  // Procesar un pago en una tarjeta existente
   const handleProcessPayment = async () => {
     try {
-      const result = await processPayment(3008, 50, token);
-      setMessage(`Payment processed. New Balance: ${result.balance}`);
+      const result = await processPayment(existingCardNumber, 50, token);
+      setSearchResult(`Pago procesado. Nuevo saldo: ${result.balance}`);
     } catch (error) {
-      setMessage('Error processing payment');
+      console.error('Error al procesar el pago:', error);
+      setSearchResult('Error al procesar el pago.');
     }
   };
 
   return (
     <div>
-      <h2>Dashboard</h2>
-      <button onClick={logout}>Logout</button>
-      <button onClick={handleCreateCard}>Create Card</button>
-      <button onClick={handleGetCardDetails}>Get Card Details</button>
-      <button onClick={handleGetCardBalance}>Get Card Balance</button>
-      <button onClick={handleProcessPayment}>Process Payment</button>
-      <p>{message}</p>
+      <nav>
+        <span>Dashboard</span>
+        <span className="nav-item" onClick={logout}>Cerrar Sesión</span>
+      </nav>
+      <div className="container">
+        <div className="card-management">
+          <h2>Gestión de Tarjetas</h2>
+          <input
+            type="text"
+            placeholder="Número de Tarjeta"
+            value={newCardNumber}
+            onChange={(e) => setNewCardNumber(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Saldo Inicial"
+            value={initialBalance}
+            onChange={(e) => setInitialBalance(e.target.value)}
+          />
+          <button onClick={handleCreateCard}>Crear Tarjeta</button>
+          <p>{message}</p>
+        </div>
+
+        <div className="card-search">
+          <h2>Consulta de Tarjetas</h2>
+          <input
+            type="text"
+            placeholder="Buscar Número de Tarjeta"
+            value={existingCardNumber}
+            onChange={(e) => setExistingCardNumber(e.target.value)}
+          />
+          <button onClick={handleGetCardDetails}>Obtener Detalles de la Tarjeta</button>
+          <button onClick={handleGetCardBalance}>Obtener Saldo de la Tarjeta</button>
+          <button onClick={handleProcessPayment}>Procesar Pago</button>
+          <p>{searchResult}</p>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
 export default Dashboard;
